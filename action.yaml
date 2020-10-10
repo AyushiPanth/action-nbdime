@@ -1,0 +1,30 @@
+name: nbdime
+author: Hugh Cole-Baker
+description: Produces a rich HTML diff for Jupyter Notebooks in pull requests using the nbdime package
+branding:
+  icon: book
+  color: orange
+inputs:
+  checkout_dir:
+    description: 'Directory containing the repository checkout'
+    required: false
+    default: '.'
+  output_dir:
+    description: 'Output directory for HTML'
+    required: true
+  base_ref:
+    description: Base Git reference for comparison
+    required: false
+    default: '${{ github.base_ref }}'
+  remote_ref:
+    description: Remote Git reference for comparison
+    required: false
+    default: '${{ github.head_ref }}'
+runs: 
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.checkout_dir }}
+    - ${{ inputs.base_ref }}
+    - ${{ inputs.remote_ref }}
+    - ${{ inputs.output_dir }}
