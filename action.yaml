@@ -15,11 +15,11 @@ inputs:
   base_ref:
     description: Base Git reference for comparison
     required: false
-    default: '${{ github.base_ref }}'
+    default: 'origin/${{ github.base_ref }}'
   remote_ref:
     description: Remote Git reference for comparison
     required: false
-    default: '${{ github.head_ref }}'
+    default: '${{ github.sha }}'
 runs: 
   using: 'docker'
   image: 'Dockerfile'
