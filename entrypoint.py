@@ -3,6 +3,7 @@ import asyncio
 import html
 import os
 import queue
+import shutil
 import subprocess
 import sys
 import time
@@ -70,6 +71,7 @@ def run_server_bg(fbase, fremote, q):
 
 links = []
 for index, (fbase, fremote) in enumerate(changed_notebooks(BASE_REF, REMOTE_REF, REPO_DIR)):
+    print(f"Generating diff for " + fbase.name)
     q = queue.Queue(maxsize=2)
     server_thread = threading.Thread(target=run_server_bg, name=f"ioloop", args=(fbase, fremote, q))
     server_thread.start()
@@ -89,7 +91,7 @@ for index, (fbase, fremote) in enumerate(changed_notebooks(BASE_REF, REMOTE_REF,
     for second in range(10):
         if os.path.isfile(dl_path):
             page_filename = f"diff-{index}.html"
-            os.rename(dl_path, os.path.join(DIFF_DIR, page_filename))
+            shutil.move(dl_path, os.path.join(DIFF_DIR, page_filename))
             links.append(dict(
                 page=page_filename, text=html.escape(f"Diff for {fbase.name} vs {fremote.name}")
             ))
