@@ -22,7 +22,7 @@ inputs:
     default: '${{ github.sha }}'
 runs: 
   using: 'docker'
-  image: 'docker://sigmaris/action-nbdime:latest'
+  image: 'docker://sigmaris/action-nbdime:v1.0.0'
   args:
     - ${{ inputs.checkout_dir }}
     - ${{ inputs.base_ref }}
