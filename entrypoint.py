@@ -38,8 +38,6 @@ SUMMARY_TEMPLATE = """<!doctype html>
 LIST_ITEM_TEMPLATE = '<li><a href="{page}">{text}</a></li>'
 
 dl_path = os.path.join(DOWNLOAD_DIR, "diff.html")
-if not os.path.isdir(DIFF_DIR):
-    os.makedirs(DIFF_DIR)
 
 xvfb = subprocess.Popen("Xvfb :99 -ac -screen 0 1280x720x16 -nolisten tcp".split(), close_fds=True)
 
@@ -72,6 +70,10 @@ def run_server_bg(fbase, fremote, q):
 links = []
 for index, (fbase, fremote) in enumerate(changed_notebooks(BASE_REF, REMOTE_REF, REPO_DIR)):
     print(f"Generating diff for " + fbase.name)
+
+    if not os.path.isdir(DIFF_DIR):
+        os.makedirs(DIFF_DIR)
+
     q = queue.Queue(maxsize=2)
     server_thread = threading.Thread(target=run_server_bg, name=f"ioloop", args=(fbase, fremote, q))
     server_thread.start()
@@ -118,7 +120,7 @@ if len(links) == 1:
         os.path.join(DIFF_DIR, links[0]["page"]),
         os.path.join(DIFF_DIR, "index.html")
     )
-else:
+elif len(links) > 1:
     # Several different files - make a summary front page
     with open(os.path.join(DIFF_DIR, "index.html"), "w") as summary:
         summary.write(SUMMARY_TEMPLATE.format(list_items="\n".join(
